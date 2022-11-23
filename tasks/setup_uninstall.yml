@@ -1,0 +1,30 @@
+# tasks file
+---
+
+- name: stop and disable service
+  service:
+    name: rstudio-server
+    state: stopped
+    enabled: false
+  become: yes
+  ignore_errors: true
+    
+- name: remove
+  apt:
+    name: rstudio-server
+    state: absent
+  become: yes
+
+- name: uninstalling rstudio server config files
+  file:
+    path: '{{item}}'
+    state: absent
+  with_items:
+    - /etc/rstudio/rserver.conf
+    - /etc/rstudio/rsession.conf
+  become: yes
+
+- name: remove | (download) directory
+  file:
+    path: "{{ rstudio_server_downloads_path }}"
+    state: absent

@@ -1,34 +1,18 @@
 # tasks file
 ---
-- name: include variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "_{{ ansible_distribution_release }}.yml"
-    - "_{{ ansible_distribution | lower }}.yml"
-    - _default.yml
-  tags:
-    - configuration
-    - rstudio-server
-    - rstudio-server-include-variables
 
-- include: install.yml
+- import_tasks: "{{ role_path }}/tasks/setup_install.yml"
+  when: ms_rstudio_server_enabled|bool
   tags:
-    - configuration
-    - rstudio-server
-    - rstudio-server-install
+    - setup-all
+    - setup-ms-rstudio-server
+    - setup-ms-develall
 
-- include: configure.yml
+- import_tasks: "{{ role_path }}/tasks/setup_uninstall.yml"
+  when: not ms_rstudio_server_enabled|bool
   tags:
-    - configuration
-    - rstudio-server
-    - rstudio-server-configure
+    - setup-all
+    - setup-ms-rstudio-server
+    - setup-ms-develall
 
-- name: start and enable service
-  service:
-    name: rstudio-server
-    state: "{{ service_default_state | default('started') }}"
-    enabled: "{{ service_default_enabled | default(true) | bool }}"
-  tags:
-    - configuration
-    - rstudio-server
-    - rstudio-server-start-enable-service
+

@@ -8,6 +8,7 @@
     cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
   tags:
     - rstudio-server-install-dependencies
+  become: yes
 
 - name: install | additional
   apt:
@@ -15,13 +16,12 @@
     state: "{{ apt_install_state | default('latest') }}"
   tags:
     - rstudio-server-install-additional
+  become: yes
 
 - name: install | create (download) directory
   file:
     path: "{{ rstudio_server_downloads_path }}"
     state: directory
-    owner: root
-    group: root
     mode: 0755
   tags:
     - rstudio-server-install-download
@@ -45,3 +45,4 @@
   tags:
     - rstudio-server-install-install
     - rstudio-server-install-install-deb
+  become: yes
